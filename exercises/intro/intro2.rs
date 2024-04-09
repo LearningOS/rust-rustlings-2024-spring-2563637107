@@ -8,6 +8,6 @@
 
 
 fn main() {
-    let x = 100;
+    let x = String :: from ("world");
     println!("Hello {}!",x);
 }
