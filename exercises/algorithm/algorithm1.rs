@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -29,11 +29,7 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
-    fn default() -> Self {
-        Self::new()
-    }
-}
+
 
 impl<T> LinkedList<T> {
     pub fn new() -> Self {
@@ -69,15 +65,62 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	
+}
+impl<T> Default for LinkedList<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl<T:PartialOrd + Copy>LinkedList<T>
+{
+    pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+		let mut result = LinkedList::<T>::new();
+        let mut node_a = list_a.start;
+        let mut node_b = list_b.start;
+        while let (Some(ptr_1),Some(ptr_2)) = (node_a,node_b)
+        {
+            unsafe{
+             if(*ptr_1.as_ptr()).val <= (*ptr_2.as_ptr()).val
+                {
+                    result.add((*ptr_1.as_ptr()).val);
+                    node_a = (*ptr_1.as_ptr()).next;
+                }
+            else
+                {
+                    result.add((*ptr_2.as_ptr()).val);   
+                    node_b = (*ptr_2.as_ptr()).next;
+                } }
         }
-	}
+ 
+        while let Some(ptr_1) =  node_a
+        {
+            unsafe{
+            result.add((*ptr_1.as_ptr()).val);
+            node_a = (*ptr_1.as_ptr()).next;}
+        }
+        while let Some(ptr_2) =  node_b
+        {
+            unsafe{
+            result.add((*ptr_2.as_ptr()).val);
+            node_b = (*ptr_2.as_ptr()).next;}
+        }
+        // while let Some(a) = node_a {
+        //     unsafe {
+        //         result.add((*a.as_ptr()).val);
+        //         node_a = (*a.as_ptr()).next;
+        //     }
+        // }
+        // while let Some(b) = node_b {
+        //     unsafe {
+        //         result.add((*b.as_ptr()).val);
+        //         node_b = (*b.as_ptr()).next;
+        //     }
+        // }
+        result
+
+    }
 }
 
 impl<T> Display for LinkedList<T>
